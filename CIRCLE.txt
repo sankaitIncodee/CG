@@ -1,0 +1,72 @@
+
+ #include<GL/glut.h>
+#include<math.h>
+#include<iostream>
+
+int xc;
+int yc;
+int r;
+
+void putpoints(int xc, int yc, int x, int y){
+    glVertex2i(xc+x,yc+y);
+    glVertex2i(xc-x,yc+y);
+    glVertex2i(xc+x,yc-y);
+    glVertex2i(xc-x,yc-y);
+    glVertex2i(xc+y,yc+x);
+    glVertex2i(xc+y,yc-x);
+    glVertex2i(xc-y,yc+x);
+    glVertex2i(xc-y,yc-x);
+}
+
+void brescircle(int xc, int yc, int r){
+    int x=0;
+    int y=r;
+    int d=3-2*r;
+
+    glBegin(GL_POINTS);
+    while(x<=y){
+        putpoints(xc,yc,x,y);
+        if(d<0){
+            d=d+4*x+6;
+
+        }
+        else{
+            d=d+4*(x-y)+10;
+            y--;
+        }
+        x++;
+    }
+    glEnd();
+    glFlush();
+}
+
+void display(){
+    glClear(GL_COLOR_BUFFER_BIT);
+    glColor3f(1,1,1);
+    brescircle(xc, yc, r);
+}
+
+
+void init(){
+    glClearColor(0,0,0,0);
+    gluOrtho2D(0,500,0,500);
+
+}
+
+int main(int argc, char**argv){
+    std::cout<<"enter circle center: ";
+    std::cin>>xc>>yc;
+    std::cout<<"enter circle radius";
+    std::cin>>r;
+
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
+    glutInitWindowSize(500,500);
+    glutInitWindowPosition(100,100);
+    glutCreateWindow("CIRCLE");
+    init();
+    glutDisplayFunc(display);
+    glutMainLoop();
+    return 0;
+
+}

@@ -1,0 +1,70 @@
+
+#include <GL/gl.h>
+#include <GL/glut.h>
+#include <cmath>
+
+// Global variables for animation
+float angle = 0.0f;
+float radius = 1.0f;
+float x = 0.0f;
+float y = 0.0f;
+float speed = 0.05f; // Adjust for animation speed
+
+void display() {
+    glClear(GL_COLOR_BUFFER_BIT);
+    glLoadIdentity();
+
+    // Translate to the calculated position
+    glTranslatef(x, y, 0.0f);
+
+    // Draw a sample shape (e.g., a triangle)
+    glBegin(GL_TRIANGLES);
+        glColor3f(1.0f, 0.0f, 0.0f); // Red
+        glVertex2f(-0.2f, -0.2f);
+        glColor3f(0.0f, 1.0f, 0.0f); // Green
+        glVertex2f(0.2f, -0.2f);
+        glColor3f(0.0f, 0.0f, 1.0f); // Blue
+        glVertex2f(0.0f, 0.2f);
+    glEnd();
+
+    glutSwapBuffers();
+}
+
+void update(int value) {
+    // Update the angle
+    angle += speed;
+
+    // Calculate the new x and y coordinates using polar coordinates
+    x = radius * cos(angle);
+    y = radius * sin(angle);
+
+    // Redraw the scene
+    glutPostRedisplay();
+
+    // Call update again after a delay (~60 frames per second)
+    glutTimerFunc(16, update, 0);
+}
+
+void reshape(int w, int h) {
+    glViewport(0, 0, w, h);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(-2.0, 2.0, -2.0, 2.0, -1.0, 1.0); // Set up orthographic projection
+    glMatrixMode(GL_MODELVIEW);
+}
+
+int main(int argc, char** argv) {
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
+    glutInitWindowSize(500, 500);
+    glutCreateWindow("OpenGL Animation");
+
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Black background
+
+    glutDisplayFunc(display);
+    glutReshapeFunc(reshape);
+    glutTimerFunc(16, update, 0); // Start the animation
+
+    glutMainLoop();
+    return 0;
+}
